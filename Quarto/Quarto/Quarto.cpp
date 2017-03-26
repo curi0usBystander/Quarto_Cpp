@@ -2,102 +2,90 @@
 //
 
 #include "stdafx.h"
-#include "Solucio.h"
+#include "Solution.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
 //#include <climits>
-#define Huma 0
-#define maquina 1
+#define human 0
+#define machine 1
 
 #define mm 0
 #define aB 1
 
 int main() {
-	/*Tauler t;
-	Peces p=Peces(false,false,true,false);
-	cout<<p.mostrar()<<endl;
-	t.setTaulerPeca(2,1,Peces(false,false,false,false));//filaxcolumna
-	t.mostrar();*/
-	//cout<<string(50,'\n');
-	Estat partida;
-	cout << "Benvingut al Quarto!!" << endl;
+	State match;
+	cout << "Welcome to Quarto!!" << endl;
 
-	cout << "Quin algorisme desitges utilitzar? [0-Minimax, 1-AlfaBeta] " << endl;
+	cout << "Which algorithm do you wish to use? [0-Minimax, 1-AlfaBeta] " << endl;
 	int algorisme;
 	cin >> algorisme;
 
-	partida.mostrarTaula();
-	cout << "Qui iniciara el joc?[0-Huma, 1-Maquina]" << endl;
+	match.showBoard();
+	cout << "Who starts the game ?[0-Human, 1-Machine]" << endl;
 	int jugador;
 	cin >> jugador;
-	if (jugador == maquina) { //aixo es maquina si funciona al reves del qeu entenc
+	if (jugador == machine) { 
 		srand(time(NULL));
 		int p = rand() % 16;
-		partida.pecaAmoure(p);
+		match.selectPiece(p);
 	}
-	jugador = (jugador + 1) % 2; //sobra si el joc funciona alreves (per la jugada inicial)
+	jugador = (jugador + 1) % 2; 
 	bool fi = false;
 	while (!fi) {
-		if (jugador == Huma) {
-			cout << "Has de posar la seguent Peca: " << partida.obtPeca().mostrar() << endl;
-			cout << "On desitjes posar-la? [Fila]" << endl;
+		if (jugador == human) {
+			cout << "You have to put this piece: " << match.getCurrentPiece().show() << endl;
+			cout << "Where do you want to put it? [row]" << endl;
 			int fila;
 			cin >> fila;
-			cout << "On desitjes posar-la?[Columna]" << endl;
+			cout << "Where do you want to put it? [Column]" << endl;
 			int columna;
 			cin >> columna;
-			partida.posicioPeca(fila, columna);
+			match.positionPiece(fila, columna);
 			//	cout<<string(50,'\n');
-			partida.mostrarTaula();
+			match.showBoard();
 
-			//evalua si has guanyat
-			Solucio s = Solucio(partida);
+			Solution s = Solution(match);
 
-			if (s.heuristica(partida, true, 0) >= 10000 && !s.obtEmpat()) {
-				cout << "has guanyat!!!!!!" << endl;
+			if (s.heuristic(match, true, 0) >= 10000 && !s.getDraw()) {
+				cout << "YOU WON" << endl;
 				fi = true;
 			}
-			else if (partida.obtPecesCons() == 16 && !partida.obtPeca().esPeca()) {
+			else if (match.getUsedPieces() == 16 && !match.getCurrentPiece().hasProperty(Piece::EmptyPiece)) {
 				fi = true;
-				cout << "EMPAT" << endl;
+				cout << "DRAW" << endl;
 			}
-			//fi evalua
 
 		}
 		else {
-			cout << "Quina peca desitges que el contrincant posi?" << endl;
-			partida.pecesDisponibles();
+			cout << "Which piece do you want the openent to use?" << endl;
+			match.showAvailablePieces();
 			int pes;
 			cin >> pes;
-			partida.pecaAmoure(pes);
-			Solucio Sol = Solucio(partida);
-			//int puntuacio;
-			if (algorisme == aB) /*puntuacio=*/Sol.alfaBeta(partida, INT_MIN, INT_MAX, 0);
-			else /*puntuacio=*/Sol.minimax(partida, 0);
-			partida = Sol.getMillor();
-			//cout<<string(50,'\n');
-			partida.mostrarTaula();
+			match.selectPiece(pes);
+			Solution Sol = Solution(match);
 
-			if (Sol.heuristica(partida, true, 0) >= 10000 && !Sol.obtEmpat()) {
-				cout << "La maquina ha guanyat" << endl;
+			if (algorisme == aB) Sol.alfaBeta(match, INT_MIN, INT_MAX, 0);
+			else Sol.minimax(match, 0);
+			match = Sol.getBest();
+
+			match.showBoard();
+
+			if (Sol.heuristic(match, true, 0) >= 10000 && !Sol.getDraw()) {
+				cout << "YOU LOSE" << endl;
 				fi = true;
 			}
-			else if (partida.obtPecesCons() == 16 && !partida.obtPeca().esPeca()) {
+			else if (match.getUsedPieces() == 16 && !match.getCurrentPiece().hasProperty(Piece::EmptyPiece)) {
 				fi = true;
-				cout << "EMPAT" << endl;
+				cout << "DRAW" << endl;
 			}
 		}
 		jugador = (jugador + 1) % 2;
 	}
-	cout << "FI de la partida" << endl;
-	cout << "Prem enter per a acabar" << endl;
+	cout << "End of the match" << endl;
+	cout << "Pres any key to end" << endl;
 	string line;
 	getline(cin, line);
 	getline(cin, line);
-	//string s;
-	//cin>>s;
-
-
 
 }
