@@ -27,21 +27,17 @@ void State::showBoard() {
 }
 
 void State::selectPiece(int i) {
-	while (i>16) {
-		cout << "Piece not available, please select another one." << endl;
-		cin >> i;
-	}
 	if (availablePieces[i].hasProperty(Piece::EmptyPiece)) {
 		piece = availablePieces[i];
 		availablePieces[i] = Piece();
 		usedPieces++;
 	}
-	else {
+	/*else {
 		cout << "This piece has already been used. Please select a valid index." << endl;
 		cin >> i;
 		selectPiece(i);
 
-	}
+	}*/
 }
 
 Piece State::getPiece(int i, int j)const 
@@ -60,21 +56,11 @@ void State::positionPiece(int i, int j)
 		board.setPiece(i, j, piece);
 		piece = Piece();
 	}
-	else {
-		// TO 
-		cout << "Hi ha una peca, posicio correcte¿[Y]" << endl;
-		string s;
-		cin >> s;
-		if (s == "Y") {
-			cout << "Index??" << endl;
-			int x, y;
-			cin >> x;
-			cin >> y;
-			positionPiece(x, y);
-		}
+}
 
-
-	}
+bool State::isPieceAvailable(int index)
+{
+	return index >= 0 && index < 16 && availablePieces[index].hasProperty(Piece::EmptyPiece);
 }
 
 Piece State::getCurrentPiece()

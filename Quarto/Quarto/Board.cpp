@@ -6,7 +6,7 @@ Board::Board()
 	gameBoard.resize(4);
 	for (int i = 0; i<4; i++) {
 		gameBoard[i].resize(4);
-		for (int j = 0; j<4; j++)gameBoard[i][j] = Piece();
+		for (int j = 0; j <4; j++)gameBoard[i][j] = Piece();
 	}
 }
 

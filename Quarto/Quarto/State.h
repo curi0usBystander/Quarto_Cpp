@@ -12,6 +12,7 @@ public:
 	void showBoard();
 	void selectPiece(int);
 	void positionPiece(int, int);
+	bool isPieceAvailable(int);
 	Piece getPiece(int, int)const;
 	Piece getFromPieceList(int);
 	bool occupied(int, int);

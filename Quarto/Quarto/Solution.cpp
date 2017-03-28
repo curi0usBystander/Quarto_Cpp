@@ -52,103 +52,103 @@ int Solution::minimax(const State& es, int level)
 
 
 
-int Solution::heuristic(State es, bool max, int nivell)
+int Solution::heuristic(State es, bool max, int level)
 {
-	int puntuacio = 0;
-	int ocupades = 0;
+	int score = 0;
+	int ocupied = 0;
 	draw = false;
-	//comprovem les files
-	for (int fila = 0; fila<4; fila++) {
-		for (int columna = 0; columna<3; columna++) {
-			if (es.occupied(fila, columna)) {
+	//check rows
+	for (int row = 0; row<4; row++) {
+		for (int column = 0; column<3; column++) {
+			if (es.occupied(row, column)) {
 				vector<int> winner;
 				winner.resize(4);
 				winner[0] = 0; winner[1] = 0; winner[2] = 0; winner[3] = 0;
-				ocupades = 0;
-				for (int adjacent = columna + 1; adjacent<4; adjacent++) {
-					if (es.occupied(fila, adjacent)) {
-						puntuacio += shareCharacteristics(es, fila, columna, fila, adjacent, winner);
-						ocupades++;
+				ocupied = 0;
+				for (int adjacent = column + 1; adjacent<4; adjacent++) {
+					if (es.occupied(row, adjacent)) {
+						score += shareCharacteristics(es, row, column, row, adjacent, winner);
+						ocupied++;
 					}
 				}
-				if (hasWon(winner) && max) return 100000 - nivell * 10000;
-				else if (hasWon(winner) && !max) return -100000 + (10000 * nivell);
-				if (ocupades == 4 - columna) puntuacio = puntuacio - winner[0] - winner[1] - winner[2] - winner[3];//estava tot ocupat i encara i aixi no podem guanyar
+				if (hasWon(winner) && max) return 100000 - level * 10000;
+				else if (hasWon(winner) && !max) return -100000 + (10000 * level);
+				if (ocupied == 4 - column) score = score - winner[0] - winner[1] - winner[2] - winner[3];//everything is occupied and yet we cannot win
 																												   //else return -10000;
 			}
 		}
 	}
 
-	//avaluacio per columnes
-	for (int columna = 0; columna<4; columna++) {
-		for (int fila = 0; fila<3; fila++) {
-			if (es.occupied(fila, columna)) {
+	//check columns
+	for (int column = 0; column<4; column++) {
+		for (int row = 0; row<3; row++) {
+			if (es.occupied(row, column)) {
 				vector<int> winner;
 				winner.resize(4);
 				winner[0] = 0; winner[1] = 0; winner[2] = 0; winner[3] = 0;
-				ocupades = 0;
-				for (int adjacent = fila + 1; adjacent<4; adjacent++) {
-					if (es.occupied(adjacent, columna)) {
-						puntuacio += shareCharacteristics(es, fila, columna, adjacent, columna, winner);
-						ocupades++;
+				ocupied = 0;
+				for (int adjacent = row + 1; adjacent<4; adjacent++) {
+					if (es.occupied(adjacent, column)) {
+						score += shareCharacteristics(es, row, column, adjacent, column, winner);
+						ocupied++;
 					}
 				}
-				if (hasWon(winner) && max) return 100000 - nivell * 10000;
-				else if (hasWon(winner) && !max) return -100000 + (10000 * nivell);
-				if (ocupades == 4 - fila) puntuacio = puntuacio - winner[0] - winner[1] - winner[2] - winner[3];//estava tot ocupat i encara i aixi no podem guanyar
+				if (hasWon(winner) && max) return 100000 - level * 10000;
+				else if (hasWon(winner) && !max) return -100000 + (10000 * level);
+				if (ocupied == 4 - row) score = score - winner[0] - winner[1] - winner[2] - winner[3];//everything is occupied and yet we cannot win
 																												//else return -10000;
 			}
 		}
 	}
 
-	//diagonal 1 esquerra a dreta
-	for (int columna = 0; columna<3; columna++) {
-		if (es.occupied(columna, columna)) {
+	//diagonal 1 left to right
+	for (int column = 0; column<3; column++) {
+		if (es.occupied(column, column)) {
 			vector<int> winner;
 			winner.resize(4);
 			winner[0] = 0; winner[1] = 0; winner[2] = 0; winner[3] = 0;
-			ocupades = 0;
-			for (int adjacent = columna + 1; adjacent<4; adjacent++) { //falla aquest o l'altre
-				if (adjacent == 4) cout << "AQUI!" << endl;
+			ocupied = 0;
+			for (int adjacent = column + 1; adjacent<4; adjacent++) { 
+				//if (adjacent == 4) cout << "HERE!" << endl;
 				if (es.occupied(adjacent, adjacent)) {
-					puntuacio += shareCharacteristics(es, columna, columna, adjacent, adjacent, winner);//feia ocupat de(clum+1,adjacent) per tant agafava comparacions per defecte
-					ocupades++;
+					score += shareCharacteristics(es, column, column, adjacent, adjacent, winner);
+					ocupied++;
 				}
 			}
-			if (hasWon(winner) && max) return 100000 - nivell * 10000;
-			else if (hasWon(winner) && !max) return -100000 + (10000 * nivell);
-			if (ocupades == 3 - columna) puntuacio = puntuacio - winner[0] - winner[1] - winner[2] - winner[3];//estava tot ocupat i encara i aixi no podem guanyar
+			if (hasWon(winner) && max) return 100000 - level * 10000;
+			else if (hasWon(winner) && !max) return -100000 + (10000 * level);
+			if (ocupied == 3 - column) score = score - winner[0] - winner[1] - winner[2] - winner[3];
 																											   //else return -10000;
 		}
 	}
 
-	//dre-esq
-	for (int columna = 3; columna>0; columna--) {
-		int fila = 3 - columna;
-		if (es.occupied(fila, columna)) {
+	//right ->left diagonal
+	for (int column = 3; column>0; column--) {
+		int row = 3 - column;
+		if (es.occupied(row, column)) {
 			vector<int> winner;
 			winner.resize(4);
 			winner[0] = 0; winner[1] = 0; winner[2] = 0; winner[3] = 0;
-			for (int adjacent = columna - 1; adjacent >= 0; adjacent--) {
-				int filaadj = 3 - adjacent;
+			for (int adjacent = column - 1; adjacent >= 0; adjacent--) {
+				int rowadj = 3 - adjacent;
 				//if (adjacent==0) cout<<"AQUI!"<<endl;
-				if (es.occupied(filaadj, adjacent)) {
-					puntuacio += shareCharacteristics(es, fila, columna, filaadj, adjacent, winner);
-					ocupades++;
+				if (es.occupied(rowadj, adjacent)) {
+					score += shareCharacteristics(es, row, column, rowadj, adjacent, winner);
+					ocupied++;
 				}
 			}
-			if (hasWon(winner) && max) return 100000 - nivell * 10000;
-			else if (hasWon(winner) && !max) return -100000 + (10000 * nivell);
-			if (ocupades == 3 - columna) puntuacio = puntuacio - winner[0] - winner[1] - winner[2] - winner[3];//estava tot ocupat i encara i aixi no podem guanyar
+			if (hasWon(winner) && max) return 100000 - level * 10000;
+			else if (hasWon(winner) && !max) return -100000 + (10000 * level);
+			if (ocupied == 3 - column) score = score - winner[0] - winner[1] - winner[2] - winner[3];
 
 		}
 	}
 
 	if (es.getUsedPieces() == 16) {
-		if (nivell == 0)draw = true; 
-		return 100000 - nivell * 10000;
+		if (level == 0)draw = true; 
+		return 100000 - level * 10000;
 	}
-	return puntuacio;
+	return score;
 }
 
 
@@ -237,7 +237,7 @@ int Solution::alfaBeta(const State& es, int alfa, int Beta, int level)
 			value = alfaBeta(fills[i], alfa, Beta, level + 1);
 			if (value>alfa) {
 				alfa = value;
-				if (level == 0)bestState = fills[i];//Nivell correcte??
+				if (level == 0)bestState = fills[i];
 			}
 			if (alfa >= Beta) return alfa;
 		}

@@ -57,9 +57,11 @@ bool Piece::hasProperty(Property p)
 
 
 
-string Piece::show() {
+string Piece::show()
+{
 	return representation;
 }
+
 string Piece::drawPiece()
 {
 	string piece = "";
@@ -73,10 +75,7 @@ string Piece::drawPiece()
 
 	return piece;
 }
-/*
-bool Peces::comparteixenCaract(const Peces& p){
-return(gran==p.gran || )
-}*/
+
 Piece& Piece::operator=(const Piece& p) {
 	if (this != &p) {
 		big = p.big;
