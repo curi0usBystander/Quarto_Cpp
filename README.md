@@ -1,6 +1,7 @@
 # Quarto
 
 I recently found out this code that i did when i was in university. 
+Then I wanted to test if it would run on visual studio out of the box and since it did
 I decided to :
 1. Refactor it a bit
 2. Remove useless code.
